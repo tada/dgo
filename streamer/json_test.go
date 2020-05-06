@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tada/dgo/test/require"
+
 	"github.com/tada/dgo/dgo"
 	"github.com/tada/dgo/streamer"
 	"github.com/tada/dgo/test/assert"
@@ -44,7 +46,7 @@ func TestJSON_primitives(t *testing.T) {
 }
 
 func TestJSON_badWrite(t *testing.T) {
-	assert.Panic(t, func() { streamer.New(nil, nil).Stream(vf.Integer(3), streamer.JSON(badWriter(0))) }, `bang`)
+	assert.Panic(t, func() { streamer.New(nil, nil).Stream(vf.Int64(3), streamer.JSON(badWriter(0))) }, `bang`)
 }
 
 func TestJSON_CanDoBinary(t *testing.T) {
@@ -79,8 +81,19 @@ func TestJSON_CanDoBigFloat(t *testing.T) {
 	assert.Equal(t, `{"__type":"bigfloat","__value":"0x.9b84ea28556bf269p+33220"}`, b.String())
 
 	bv, ok := streamer.UnmarshalJSON(b.Bytes(), nil).(dgo.BigFloat)
-	assert.True(t, ok)
+	require.True(t, ok)
 	assert.True(t, bf.Cmp(bv.GoBigFloat()) == 0)
+}
+
+func TestJSON_CanDoUint64(t *testing.T) {
+	ui := uint64(0x8000000000000000)
+	b := bytes.Buffer{}
+	streamer.New(nil, nil).Stream(vf.Uint64(ui), streamer.JSON(&b))
+	assert.Equal(t, `9223372036854775808`, b.String())
+
+	uv, ok := streamer.UnmarshalJSON(b.Bytes(), nil).(dgo.Uint64)
+	require.True(t, ok)
+	assert.Equal(t, ui, uv.GoUint())
 }
 
 func TestJSON_ComplexKeys(t *testing.T) {
