@@ -3,7 +3,6 @@ package internal
 import (
 	"reflect"
 
-	"github.com/tada/catch"
 	"github.com/tada/dgo/dgo"
 )
 
@@ -86,7 +85,7 @@ func (t *metaType) New(arg dgo.Value) dgo.Value {
 		tv = AsType(arg)
 	}
 	if !t.Instance(tv) {
-		panic(catch.Error(IllegalAssignment(t, tv)))
+		panic(IllegalAssignment(t, tv))
 	}
 	return tv
 }

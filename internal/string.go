@@ -8,7 +8,6 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/tada/catch"
 	"github.com/tada/dgo/dgo"
 	"github.com/tada/dgo/util"
 )
@@ -67,7 +66,7 @@ func newString(t dgo.Type, arg dgo.Value) dgo.String {
 	}
 
 	if !t.Instance(s) {
-		panic(catch.Error(IllegalAssignment(t, s)))
+		panic(IllegalAssignment(t, s))
 	}
 	return s
 }
