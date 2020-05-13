@@ -4,8 +4,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/tada/dgo/parser"
-
 	"github.com/tada/dgo/dgo"
 	"github.com/tada/dgo/internal"
 	"github.com/tada/dgo/stringer"
@@ -14,15 +12,6 @@ import (
 	"github.com/tada/dgo/typ"
 	"github.com/tada/dgo/vf"
 )
-
-func TestAlias_Freeze(t *testing.T) {
-	alias := parser.NewAlias(vf.String(`hello`)).(dgo.Mutability)
-	assert.False(t, alias.Frozen())
-	assert.Same(t, alias, alias.ThawedCopy())
-	assert.Panic(t, func() {
-		alias.FrozenCopy()
-	}, `attempt to freeze unresolved alias`)
-}
 
 func TestAliasMap_Get(t *testing.T) {
 	am := tf.BuiltInAliases().Collect(func(a dgo.AliasAdder) {
